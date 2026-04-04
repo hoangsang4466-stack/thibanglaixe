@@ -5,19 +5,23 @@ import { useConfig } from '../context/ConfigContext';
 export default function FloatingZalo() {
   const { settings } = useConfig();
 
+  // ✅ FIX ZALO CHUẨN 100%
   const handleZaloClick = (e: React.MouseEvent) => {
     e.preventDefault();
-    
-    // Tự động bóc tách chỉ lấy số điện thoại, sửa đầu 84 thành 0
-    const rawLink = settings.zaloLink || '';
-    const phoneMatch = rawLink.match(/\d+/);
-    let phone = phoneMatch ? phoneMatch[0] : '0824337101'; 
+
+    // Lấy toàn bộ số (fix lỗi)
+    let phone = (settings?.zaloLink || '').replace(/\D/g, '');
+
+    // Chuẩn hóa số VN
     if (phone.startsWith('84')) {
-      phone = '0' + phone.substring(2);
+      phone = '0' + phone.slice(2);
     }
 
-    // Ép mở app Zalo
+    // fallback
+    if (!phone) phone = '0824337101';
+
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
     if (isMobile) {
       window.location.href = `https://zalo.me/${phone}`;
     } else {
@@ -33,8 +37,11 @@ export default function FloatingZalo() {
     >
       <div className="flex items-center gap-2 md:gap-3 bg-blue-600 text-white px-4 py-2.5 md:px-5 md:py-3 rounded-full shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all group-hover:scale-105">
         <MessageCircle className="w-5 h-5 md:w-6 md:h-6" />
-        <span className="font-bold text-xs md:text-sm">{settings.zaloConsultLabel}</span>
+        <span className="font-bold text-xs md:text-sm">
+          {settings?.zaloConsultLabel || "Tư vấn qua Zalo"}
+        </span>
       </div>
+
       <div className="absolute -top-12 right-0 bg-white text-slate-900 px-4 py-2 rounded-xl shadow-lg text-xs font-bold whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none border border-slate-100 hidden md:block">
         Hỗ trợ 24/7 - Có lịch thi sớm!
       </div>
