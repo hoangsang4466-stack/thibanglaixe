@@ -4,14 +4,31 @@ import { useConfig } from '../context/ConfigContext';
 
 export default function FloatingZalo() {
   const { settings } = useConfig();
-  // Đã sửa: Lấy trực tiếp link Zalo gốc, loại bỏ tham số ?text= gây lỗi trên điện thoại
-  const zaloUrl = settings.zaloLink;
+
+  const handleZaloClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    
+    // Tự động bóc tách chỉ lấy số điện thoại, sửa đầu 84 thành 0
+    const rawLink = settings.zaloLink || '';
+    const phoneMatch = rawLink.match(/\d+/);
+    let phone = phoneMatch ? phoneMatch[0] : '0824337101'; 
+    if (phone.startsWith('84')) {
+      phone = '0' + phone.substring(2);
+    }
+
+    // Ép mở app Zalo
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    if (isMobile) {
+      window.location.href = `https://zalo.me/${phone}`;
+    } else {
+      window.open(`https://chat.zalo.me/?phone=${phone}`, '_blank');
+    }
+  };
 
   return (
     <a
-      href={zaloUrl}
-      target="_blank"
-      rel="noopener noreferrer"
+      href="#"
+      onClick={handleZaloClick}
       className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-50 group"
     >
       <div className="flex items-center gap-2 md:gap-3 bg-blue-600 text-white px-4 py-2.5 md:px-5 md:py-3 rounded-full shadow-xl shadow-blue-200 hover:bg-blue-700 transition-all group-hover:scale-105">
