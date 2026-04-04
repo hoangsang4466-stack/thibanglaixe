@@ -4,7 +4,8 @@ import { useConfig } from '../context/ConfigContext';
 
 export default function FloatingZalo() {
   const { settings } = useConfig();
-  const zaloUrl = `${settings.zaloLink}?text=${encodeURIComponent(settings.zaloAutoMsg)}`;
+  // Đã sửa: Lấy trực tiếp link Zalo gốc, loại bỏ tham số ?text= gây lỗi trên điện thoại
+  const zaloUrl = settings.zaloLink;
 
   return (
     <a
